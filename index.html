@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+    <title>Upload File</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;1,100;1,200;1,300;1,400&display=swap"
+        rel="stylesheet" />
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        font-family: "Poppins", sans-serif;
+    }
+
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #d0e4e6;
+        height: 100vh;
+    }
+
+    .main {
+        border: 3px #7bffff;
+        width: 700px;
+        height: 500px;
+        background-color: #45e9ff;
+        box-shadow: rgba(0, 0, 0, 0.7) 0px 10px 50px;
+        border-radius: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    .main.active {
+        border: 3px solid rgb(121, 225, 233);
+    }
+
+    .icon {
+        font-size: 100px;
+        color: #0d6268;
+    }
+
+    .main h3 {
+        font-size: 30px;
+        font-weight: 500;
+        color: #333;
+    }
+
+    .main span {
+        font-size: 25px;
+        font-weight: 500;
+        color: #333;
+        margin: 10px 0 15px 0;
+    }
+
+    .main button {
+        padding: 10px 25px;
+        font-size: 20px;
+        font-weight: 500;
+        border: none;
+        outline: none;
+        background: #45e9ff;
+        color: #0d6268;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .main img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+        border-radius: 5px;
+    }
+</style>
+
+<body>
+    <div class="main">
+        <div class="icon">
+            <i class="fas fa-images"></i>
+        </div>
+
+        <h3 class="text">Drag & Drop</h3>
+        <span>OR</span>
+        <button class="btn">Browse File</button>
+        <input class="input" type="file" hidden />
+    </div>
+    <script>
+        const DragArea = document.querySelector(".main"),
+            DragText = DragArea.querySelector("h3"),
+            Button = DragArea.querySelector("button"),
+            Input = DragArea.querySelector("input");
+        let MyFile;
+
+        Button.onclick = () => {
+            Input.click();
+        };
+
+        Input.addEventListener("change", function () {
+            MyFile = this.files[0];
+            DragArea.classList.add("active");
+        });
+
+        DragArea.addEventListener("dragover", (event) => {
+            event.preventDefault();
+            DragArea.classList.add("active");
+            DragText.textContent = "Release to upload file";
+        });
+
+        DragArea.addEventListener("dragleave", (event) => {
+            event.preventDefault();
+            DragArea.classList.remove("active");
+            DragText.textContent = "Drag and Drop";
+        });
+
+        DragArea.addEventListener("drop", (event) => {
+            event.preventDefault();
+            MyFile = event.dataTransfer.files[0];
+
+            ShowMe();
+        });
+
+        function ShowMe() {
+            let filetype = MyFile.type;
+            let VaildEx = ["image/jpeg", "image/jpg", "image/png"];
+
+            if (VaildEx.includes(filetype)) {
+                let FileReader = new FileReader();
+
+                FileReader.onload = () => {
+                    let ImgUrl = FileReader.result;
+                    let Img = `<img src="${ImgUrl}" alt="">`;
+
+                    DragArea.innerHTML = Img;
+                };
+                FileReader.readAsDataURL(MyFile);
+            } else {
+                alert("This file is not valid");
+                DragArea.classList.remove("active");
+                DragText.textContent = "Drag & Drop";
+            }
+        }
+    </script>
+</body>
+
+</html>
